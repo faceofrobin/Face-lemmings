@@ -191,7 +191,7 @@ function remove(f,kind){if(!f.alive)return;f.alive=false;f.el.remove();if(kind==
 function gateFor(f,nextX){
  for(const c of controls)if(c.type==='gate'&&!c.open){
   const gx=LEFT+c.id*STEP+STEP*.75;
-  if(f.x<gx-13 && nextX>=gx-13)return gx-13;
+  if(f.x<=gx-13.001 && nextX>=gx-13)return gx-13;
  }
  return null;
 }
