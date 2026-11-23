@@ -11,7 +11,7 @@ Each Face is drawn from the original **Face of Robin** emblem. Its features rema
 
 **The Playground** (`index.html`) is a place for aimless motion. The Faces roll over obstacles, fall off ledges, land on words, and submit reluctantly to gravity. Pick one up and throw it; it will resume its business as though nothing has happened.
 
-**Face Migration** (`level.html`) is a series of sixteen unnecessary journeys: bridges that must be extended, gates that must be opened, descents, arches, and semicircular bowls where the Faces collect before being released. A square playfield, three simple scores, and a procession that will not explain its objectives.
+**The Long Migration** (`level.html`) is a single journey through approximately sixteen screens of ordinary HTML. A button releases a tiny Face into real text, buttons, images and boxes. The page itself becomes the terrain. The final section counts the arrivals. The example content lives inside `<div id="migration-content">` and can be replaced with any HTML you like. Add `data-face-platform` to designate a walkable object or `data-face-ignore` to exclude a subtree. The script `migration.js` reads each rendered text line and element rectangle directly.\n\n**The original sixteen-level experiment** is preserved in `sixteen-levels.html`. It contains gates, bridges, descents, arches and bowls.
 
 The Face does not care about the scoreboard.
 
@@ -19,7 +19,7 @@ The Face does not care about the scoreboard.
 
 This experiment began with the tiny CSS walkers from [MarkBlah's Lemmings](https://github.com/MarkBlah/lemmings), whose clever collision and page-walking ideas sparked the adaptation. Face Migration replaces the pixel walker with the original Face SVG, given rotation, motion and a world of its own.
 
-The project contains the original `walker.js` and `walker.min.js` as historical reference. The rolling playground uses `face-walker.js`; the game level has its own bounded, DOM-based level engine. The artwork is `Face-svg.svg`.
+The project contains the original `walker.js` and `walker.min.js` as historical reference. The rolling playground uses `face-walker.js`; the sixteen-level prototype is archived separately. The long page uses `migration.js`. The artwork is `Face-svg.svg`.
 
 This is an artwork hosted by FACEOFROBIN.COM, not a general-purpose embeddable widget or CDN distribution.
 
