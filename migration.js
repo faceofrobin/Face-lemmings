@@ -119,13 +119,15 @@
     if(dirty)scan();
     const b=$('spawn-station').getBoundingClientRect(), r=region.getBoundingClientRect();
     const x=Math.min(W()-R,Math.max(R,b.left+scrollX+Math.min(100,b.width*.22)));
-    const y=b.bottom+scrollY+6;
+    const y=b.bottom+scrollY-6;
     const el=document.createElement('div');
     el.className='migration-face';
     el.setAttribute('aria-label','Rolling Face');
     world.append(el);
     const p={el,x,y,vx:0,vy:.5,dir:1,ground:null,target:null,angle:0,alive:true,held:false,trail:[]};
     faces.push(p);count.released++;display();
+    // Render immediately so a click visibly creates the Face before any animation frame.
+    p.el.style.transform='translate3d('+(p.x-R).toFixed(1)+'px,'+(p.y-SIZE).toFixed(1)+'px,0) rotate(0deg)';
     $('status').textContent='Another Face departs. Its plans are confidential.';
     // Drag and throw remain possible; the content underneath is still interactive.
     const position=e=>{p.x=e.clientX+scrollX;p.y=e.clientY+scrollY+R;p.trail.push({x:p.x,y:p.y,t:e.timeStamp});p.trail=p.trail.filter(z=>e.timeStamp-z.t<130)};
