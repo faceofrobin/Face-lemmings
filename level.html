@@ -182,7 +182,8 @@ DESTINATION: PENDING</pre>
 <p>The end keeps a record of the Faces that managed to arrive. What this proves is beyond the scope of the experiment.</p>
 <div class="totals"><div>ARRIVED<br><strong id="finishArrived">0</strong></div><div>LOST<br><strong id="finishLost">0</strong></div></div>
 </section>
-<script>\n/* FACE MIGRATION — one long DOM landscape, not an embeddable widget.
+<script>
+/* FACE MIGRATION — one long DOM landscape, not an embeddable widget.
    Terrain is sampled from the real HTML inside #migration-content.
    Every press of #spawnFace releases one authentic, unmodified SVG Face.
 */
@@ -344,7 +345,8 @@ DESTINATION: PENDING</pre>
   }
   display();requestAnimationFrame(frame);
   window.FaceMigration={spawn,reset,get stats(){return {...count};},rescan(){dirty=true;}};
-})();\n</script>
+})();
+</script>
 <script>
 const output=new MutationObserver(()=>{
  document.getElementById('finishArrived').textContent=document.getElementById('arrivedCount').textContent;
