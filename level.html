@@ -1,253 +1,193 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Face Migration — Sixteen Journeys</title>
+<title>Face Migration — The Long Way Around</title>
 <style>
-:root{--ink:#111;--paper:#f4f3ef;--line:#d0cfcb}
-*{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
-main{max-width:890px;margin:auto;padding:24px 16px 52px}
-h1{text-align:center;font-size:clamp(2.1rem,6vw,4.5rem);letter-spacing:-.065em;line-height:1.05;margin:9px auto 17px;font-weight:900}
-button,select{font:inherit;cursor:pointer;border:1.5px solid #111;background:#fff;color:#111;padding:10px 13px;border-radius:0}
-button:hover:not(:disabled),button:focus-visible{background:#111;color:white}button:disabled{opacity:.38;cursor:default}
-.controls{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px;flex-wrap:wrap}
-.actions,.navigation{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-#start{background:#111;color:#fff}#start:hover:not(:disabled){background:#555}
-#levelSelect{max-width:190px}
-.scores{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
-.score{background:#fff;border:1.5px solid #111;padding:10px 6px;text-align:center;font-variant-numeric:tabular-nums}
-.score span{display:block;color:#555;font-size:10px;letter-spacing:.16em;font-weight:700}
-.score strong{display:block;font-size:clamp(20px,4vw,32px);line-height:1.2;margin-top:3px}
-#viewport{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;background:#fdfdfb;border:3px solid var(--ink);touch-action:manipulation}
-#world{position:absolute;left:0;top:0;width:800px;height:800px;transform-origin:top left;overflow:hidden;background:linear-gradient(#fafaf8 0%,#f5f5f2 75%,#e9e9e5 100%)}
-#terrain{position:absolute;inset:0;pointer-events:none}
-#terrain svg{position:absolute;inset:0}
-.terrain-fill{fill:#d8d8d3;stroke:none}
-.terrain-line{fill:none;stroke:#111;stroke-width:5;stroke-linejoin:round;stroke-linecap:round}
-.terrain-hatch{fill:url(#hatch)}
-#faces{position:absolute;inset:0;pointer-events:none}
-.face{position:absolute;left:0;top:0;width:26px;height:26px;background:url('Face-svg.svg') center/contain no-repeat;transform-origin:50% 50%;will-change:transform;filter:drop-shadow(0px 1px 1px #5558)}
-.world-note{position:absolute;font:11px/1.3 monospace;letter-spacing:.13em;color:#666;pointer-events:none}
-.world-label{position:absolute;top:26px;left:22px;right:22px;text-align:center;font:700 16px/1.3 monospace;letter-spacing:.12em}
-.entry{position:absolute;width:32px;height:24px;border:3px solid #111;background:white;text-align:center;font:10px/18px monospace}
-.exit{position:absolute;width:48px;height:65px;border:4px double #111;background:white;display:flex;align-items:center;justify-content:center;text-align:center;font:10px/1.3 monospace}
-.mechanic{position:absolute;border:2px solid #111;background:#fff;min-width:96px;font:700 11px/1.25 monospace;padding:7px;z-index:3;cursor:pointer;box-shadow:3px 3px 0 #aaa}
-.mechanic.active{background:#111;color:white}
-.mechanic .minor{display:block;font-size:9px;font-weight:400;margin-top:2px}
-.gate{position:absolute;width:10px;background:#111;pointer-events:none}
-.gate.open{opacity:.1}
-.bridge{position:absolute;height:10px;background:repeating-linear-gradient(90deg,#111 0 12px,#888 12px 16px);pointer-events:none}
-.bridge.absent{opacity:.1;border:2px dashed #111;background:transparent}
-#result{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);background:#fff;border:4px solid #111;padding:22px;width:460px;max-width:80%;z-index:8;text-align:center;box-shadow:9px 9px 0 #999}
-#result[hidden]{display:none}#result h2{font-size:29px;letter-spacing:-.05em;margin:0 0 9px}#result p{line-height:1.4;margin:0 0 15px}
-.subline{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px;margin-top:12px;font-size:13px}
-#help{display:none;border-top:1px solid #888;margin-top:12px;padding-top:12px;max-width:68ch;line-height:1.55;font-size:14px}
-#help.visible{display:block}#helpButton{font-size:13px}
-#message{font-size:13px;min-height:22px;color:#555}
-@media(max-width:560px){main{padding:14px 8px 38px}button,select{padding:8px 9px;font-size:12px}
-.controls{gap:6px}.actions,.navigation{gap:5px}#levelSelect{max-width:125px}.scores{gap:5px}.score{padding:7px 2px}
-#viewport{border-width:2px}.subline{align-items:start}}
-@media(prefers-reduced-motion:reduce){.face{will-change:auto}}
+:root{--ink:#111;--paper:#f6f5f1;--quiet:#6e6e6a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 Arial,Helvetica,sans-serif}
+h1,h2,h3,p{margin-top:0}h1,h2{letter-spacing:-.055em}h1{font-size:clamp(3.4rem,9vw,8.5rem);line-height:.9;margin-bottom:20px}h2{font-size:clamp(2.2rem,5vw,4.9rem);line-height:1.04}
+button{font:inherit;background:#111;color:white;border:2px solid #111;padding:12px 20px;cursor:pointer}
+button:hover{background:white;color:#111}button:focus-visible{outline:3px solid #777;outline-offset:3px}
+a{color:inherit} .intro{padding:clamp(34px,7vw,100px) 6vw 7vh;min-height:61vh;display:flex;flex-direction:column;justify-content:center}
+.eyebrow,.chapter-number{font:12px/1.5 monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--quiet)}
+.intro p{max-width:55ch;font-size:clamp(17px,2vw,23px)}
+.spawn{position:relative;margin:0 5vw 5vh;border:3px solid #111;padding:26px 26px 42px;background:#fff}
+.spawn h2{font-size:clamp(1.6rem,3.5vw,3rem);margin-bottom:8px}
+.spawn p{max-width:60ch}.spawn-actions{display:flex;gap:8px;flex-wrap:wrap}
+#spawn-station:after{content:"";position:absolute;bottom:0;left:0;right:0;border-bottom:8px solid #111}
+.scoreboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 5vw 20px}
+.score{border:2px solid #111;background:#fff;padding:13px;text-align:center}
+.score small{display:block;letter-spacing:.2em;font-size:11px}.score strong{display:block;font-size:clamp(25px,4vw,43px);line-height:1.1}
+#status{padding:0 5vw 30px;font-size:13px;color:var(--quiet)}
+#migration-content{position:relative;overflow:hidden}
+.chapter{position:relative;min-height:94vh;padding:9vh clamp(25px,8vw,125px);border-top:1px solid #b9b9b4;display:flex;flex-direction:column;justify-content:center;gap:22px}
+.chapter>*{max-width:100%}
+.chapter>h2{max-width:850px}
+.chapter>p{max-width:63ch;font-size:clamp(17px,2.1vw,23px)}
+.chapter:nth-child(2n){background:#ecece8}
+.chapter:nth-child(3n){text-align:right;align-items:flex-end}
+.chapter:nth-child(4n){background:#e1e1dc}
+.stack{display:flex;align-items:start;flex-wrap:wrap;gap:18px;width:100%}
+.migration-card{flex:1 1 220px;border:3px solid #111;padding:25px;background:#fff;min-height:140px}
+.migration-card h3{font-size:24px;letter-spacing:-.05em}
+.migration-card p{margin-bottom:0}
+.chapter blockquote{border-left:10px solid #111;padding:24px 26px;background:#fff;margin:0;max-width:700px;font-size:clamp(20px,3.5vw,36px)}
+.chapter img{display:block;width:min(225px,40vw);height:auto;border:3px solid #111;background:#fff}
+.chapter .art-row{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.chapter pre{padding:20px;border:2px solid #111;background:#fff;overflow:auto;max-width:100%}
+.chapter table{border-collapse:collapse;width:min(640px,100%);background:white}th,td{border:2px solid #111;padding:14px;text-align:left}
+.chapter .micro{font-size:14px;max-width:62ch}.chapter hr{width:100%;border:none;border-top:5px solid #111;margin:18px 0}
+.finish{position:relative;min-height:55vh;background:#111;color:#fff;padding:60px 7vw;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.finish:before{content:"";position:absolute;top:0;left:0;right:0;height:15px;background:repeating-linear-gradient(90deg,#fff 0 35px,#111 35px 70px)}
+.finish h2{font-size:clamp(3rem,8vw,7rem);max-width:850px}.finish p{max-width:57ch}
+.finish .totals{display:flex;gap:35px;font:16px monospace}.finish strong{font-size:32px}
+.migration-face{position:absolute;width:26px;height:26px;background:url('Face-svg.svg') center/contain no-repeat;pointer-events:auto;cursor:grab;touch-action:none;will-change:transform;filter:drop-shadow(0 1px 2px #5556)}
+@media(max-width:600px){.intro{min-height:48vh}.chapter{padding:8vh 6vw;min-height:95svh}.spawn{padding:18px 18px 38px}.scoreboard{gap:5px}.score{padding:9px 2px}.score small{font-size:9px;letter-spacing:.08em}.chapter .stack{gap:10px}.migration-card{min-height:100px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style></head>
-<body><main>
-<h1>Face Migration</h1>
-<div class="controls">
-<div class="actions"><button id="start">Start</button><button id="restart">Restart</button></div>
-<div class="navigation">
-<button id="previous" aria-label="Previous level">‹</button>
-<select id="levelSelect" aria-label="Choose level"></select>
-<button id="next" aria-label="Next level">›</button>
+<body>
+<header class="intro">
+<span class="eyebrow">An excessively long undertaking</span>
+<h1>Face<br>Migration</h1>
+<p>The Face has no particular destination. But sixteen screens of words, boxes, images and questionable architecture stand between here and wherever there may be.</p>
+</header>
+<section class="spawn" id="spawn-station" aria-label="Face spawning station">
+<div class="eyebrow">Point of departure / 00</div>
+<h2>The Beginning of Something</h2>
+<p>Send a Face out into the page. It will follow actual typography and objects, tumble from ledges, and perhaps eventually reach the bottom.</p>
+<div class="spawn-actions">
+<button id="spawnFace">Spawn a Face</button>
+<button id="spawnMany">Spawn five</button>
+<button id="resetFaces">Restart migration</button>
 </div>
+</section>
+<div class="scoreboard" aria-live="polite">
+<div class="score"><small>SPAWNED</small><strong id="releasedCount">0</strong></div>
+<div class="score"><small>ARRIVED</small><strong id="arrivedCount">0</strong></div>
+<div class="score"><small>LOST</small><strong id="lostCount">0</strong></div>
 </div>
-<div class="scores" aria-live="polite">
-<div class="score"><span>RELEASED</span><strong id="released">0</strong></div>
-<div class="score"><span>SAVED</span><strong id="saved">0</strong></div>
-<div class="score"><span>LOST</span><strong id="lost">0</strong></div>
+<div id="status" role="status">The journey begins whenever you wish.</div>
+
+<!-- ============================================================
+     EDITABLE MODULE: PASTE YOUR OWN HTML INSIDE migration-content.
+     It can be paragraphs, headings, buttons, images, cards, tables,
+     custom inline styles, ordinary HTML, or all of the above.
+     The migration engine reads the ACTUAL rendered DOM geometry.
+     For intentional platforms add data-face-platform to an element.
+     To exclude a subtree from collision detection: data-face-ignore.
+     Keep the ID "migration-content" and the finish-line below it.
+     ============================================================ -->
+<div id="migration-content">
+<section class="chapter">
+<span class="chapter-number">01 / OPENING ARGUMENT</span>
+<h2>Everything begins somewhere.</h2>
+<p>And here is somewhere. The words are not merely words. They are little ledges that hold up the weight of a very small, very determined Face.</p>
+<div class="stack"><div class="migration-card"><h3>Premise</h3><p>Movement implies purpose. Purpose implies a destination.</p></div><div class="migration-card"><h3>Objection</h3><p>Neither implication has been established.</p></div></div>
+</section>
+<section class="chapter">
+<span class="chapter-number">02 / THE COMMITTEE</span>
+<h2>We have formed a committee.</h2>
+<p>Its task is to determine where everyone is going, why they are going there, and whether or not they should bring a hat.</p>
+<button type="button" onclick="this.textContent='THE MOTION CARRIES'">CALL THE QUESTION</button>
+<blockquote>Minutes were taken. No one remembers by whom.</blockquote>
+</section>
+<section class="chapter">
+<span class="chapter-number">03 / AN IMAGE APPEARS</span>
+<h2>The Face encounters itself.</h2>
+<div class="art-row"><img src="Face-svg.svg" alt="The Face, watching the procession" loading="lazy"><p>This is an image. It is also a platform, an obstacle, and possibly a mirror. The Face looks back at the Face. Nothing is clarified.</p></div>
+</section>
+<section class="chapter">
+<span class="chapter-number">04 / THREE DEPARTMENTS</span>
+<h2>One office. Several opinions.</h2>
+<div class="stack"><div class="migration-card"><h3>Intake</h3><p>Records the arrival of ideas.</p></div><div class="migration-card"><h3>Transit</h3><p>Moves them to another desk.</p></div><div class="migration-card"><h3>Archives</h3><p>Forgets where the desks are.</p></div></div>
+</section>
+<section class="chapter">
+<span class="chapter-number">05 / THE LONG SENTENCE</span>
+<h2>A digression.</h2>
+<p>There is a particular kind of journey that begins in the middle of a sentence and continues for as long as it takes the speaker to arrive at a point that may or may not have existed at the beginning, with several commas, more than one qualification, and an undeniable sense of ceremonial progress.</p>
+<hr><p>Then, unexpectedly, the sentence ends.</p>
+</section>
+<section class="chapter">
+<span class="chapter-number">06 / TWO CHOICES</span>
+<h2>The illusion of control.</h2>
+<p>Choose your preferred interpretation of what is happening here. The Faces will not be consulted.</p>
+<div class="stack"><button type="button" onclick="this.textContent='CERTAINLY'">YES</button><button type="button" onclick="this.textContent='ALSO YES'">NO</button></div>
+</section>
+<section class="chapter">
+<span class="chapter-number">07 / AN EXHIBITION</span>
+<h2>Several objects of no known origin.</h2>
+<div class="art-row"><img src="Face-svg.svg" loading="lazy" alt="Exhibit A: The Face"><img src="Face-svg.svg" loading="lazy" alt="Exhibit B: The Face"><img src="Face-svg.svg" loading="lazy" alt="Exhibit C: The Face"></div>
+<p class="micro">Three distinct works, all entirely indistinguishable. The curatorial explanation has been mislaid.</p>
+</section>
+<section class="chapter">
+<span class="chapter-number">08 / THE LEDGER</span>
+<h2>Things are being counted.</h2>
+<table><thead><tr><th>Item</th><th>Quantity</th></tr></thead><tbody><tr><td>Certainty</td><td>0</td></tr><tr><td>Optimism</td><td>Moderate</td></tr><tr><td>Faces</td><td>See above</td></tr></tbody></table>
+</section>
+<section class="chapter">
+<span class="chapter-number">09 / CORRESPONDENCE</span>
+<h2>Dear Recipient,</h2>
+<blockquote>We are writing to inform you that progress has been made in an unspecified direction.</blockquote>
+<p>Please accept this update in the spirit with which it was intended, whatever that may have been.</p>
+</section>
+<section class="chapter">
+<span class="chapter-number">10 / A SMALL CATASTROPHE</span>
+<h2>Something is missing.</h2>
+<div class="stack"><div class="migration-card"><h3>Step One</h3><p>Locate the problem.</p></div><div class="migration-card"><h3>Step Three</h3><p>Celebrate the solution.</p></div></div>
+<p>The second step is no longer available. Kindly proceed.</p>
+</section>
+<section class="chapter">
+<span class="chapter-number">11 / A CLASSIFIED OBJECT</span>
+<h2>Do not open.</h2>
+<pre>OBJECT: UNKNOWN
+CONTENTS: CONFIDENTIAL
+STATUS: IN MOTION
+DESTINATION: PENDING</pre>
+<button type="button" onclick="this.textContent='IT WAS EMPTY'">OPEN ANYWAY</button>
+</section>
+<section class="chapter">
+<span class="chapter-number">12 / ANOTHER IMAGE</span>
+<h2>Evidence of repetition.</h2>
+<div class="art-row"><p>To encounter The Face once is coincidence. To encounter it twice is an invitation to reconsider coincidence.</p><img src="Face-svg.svg" alt="The Face, encountered again" loading="lazy"></div>
+</section>
+<section class="chapter">
+<span class="chapter-number">13 / FORMALITIES</span>
+<h2>Please sign here.</h2>
+<p>There is nothing to agree to. There are no terms. There is only a box that resembles a form.</p>
+<div class="migration-card"><label for="fictionalSignature">Name, title, or utterly unhelpful phrase</label><p><input id="fictionalSignature" style="width:100%;padding:12px;border:2px solid" placeholder="I was here, briefly."></p><button type="button" onclick="this.textContent='RECEIVED WITH INDIFFERENCE'">SUBMIT</button></div>
+</section>
+<section class="chapter">
+<span class="chapter-number">14 / THE FINAL MEETING</span>
+<h2>A resolution is proposed.</h2>
+<blockquote>Resolved, that the journey shall continue until it stops.</blockquote>
+<p>The resolution passes unanimously, although the vote is not recorded.</p>
+</section>
+<section class="chapter">
+<span class="chapter-number">15 / THE APPROACH</span>
+<h2>We may be nearly there.</h2>
+<div class="stack"><div class="migration-card"><h3>Looking back</h3><p>Many things have happened.</p></div><div class="migration-card"><h3>Looking ahead</h3><p>There appears to be a bottom.</p></div></div>
+</section>
+<section class="chapter">
+<span class="chapter-number">16 / THE LAST PAGE</span>
+<h2>A conclusion refuses to appear.</h2>
+<p>There will be a finish line shortly. Whether that represents triumph, failure, or an administrative convenience has not yet been determined.</p>
+<hr><p>Nevertheless, the Face proceeds.</p>
+</section>
 </div>
-<div id="viewport" aria-label="Square Face Migration game board">
-<div id="world">
-<div class="world-label" id="worldTitle"></div>
-<div id="terrain"></div><div id="fixtures"></div><div id="faces"></div>
-<div id="result" hidden><h2 id="resultTitle"></h2><p id="resultText"></p><button id="resultButton">Next journey</button></div>
-</div></div>
-<div class="subline"><span id="message" aria-live="polite">An aimless migration awaits.</span><button id="helpButton" aria-expanded="false" aria-controls="help">How to Play</button></div>
-<div id="help"><strong>How to Play</strong><p>Press <b>Start</b> to release a procession of Faces. They roll automatically over ramps and bridges, collect in bowls, and fall if there is no ground beneath them. Tap each black-and-white gate control to <b>open</b> it; tap a bridge control to <b>extend</b> its missing span. Save the required number at the EXIT. Use the arrows or level selector to visit any of the 16 journeys. Restart begins the current level again. Some obstacles must be cleared before the procession arrives; others may hold the Faces until you're ready to send them onward.</p></div>
-</main>
+<!-- END EDITABLE MODULE -->
+
+<section class="finish" id="finish-line">
+<div class="eyebrow" style="color:#bbb">Point of arrival / 16</div>
+<h2>THE END.<br>APPARENTLY.</h2>
+<p>The end keeps a record of the Faces that managed to arrive. What this proves is beyond the scope of the experiment.</p>
+<div class="totals"><div>ARRIVED<br><strong id="finishArrived">0</strong></div><div>LOST<br><strong id="finishLost">0</strong></div></div>
+</section>
+<script src="migration.js"></script>
 <script>
-(()=>{
-'use strict';
-const W=800,H=800,LEFT=55,RIGHT=745,N=6,STEP=(RIGHT-LEFT)/N,R=13,TOTAL=10,GOAL=7;
-const $=id=>document.getElementById(id);
-const viewport=$('viewport'),world=$('world'),terrain=$('terrain'),fixtures=$('fixtures'),facesEl=$('faces');
-const shapes=[
-  // Consecutive heights define paths. "b" is an actual curved bowl; "a" is a convex arch.
-  {name:'THE FIRST DEPARTURE',y:[240,270,300,340,400,440,500],k:'rrfrrr',gate:[3],bridge:[]},
-  {name:'BRIDGES TO NOWHERE',y:[220,260,290,320,390,430,490],k:'rfrfrr',gate:[4],bridge:[2]},
-  {name:'THE HALF MOON',y:[240,270,310,310,390,440,490],k:'rrbrrr',gate:[3],bridge:[]},
-  {name:'THE GREAT DESCENT',y:[190,240,310,380,460,500,540],k:'rrrrrr',gate:[2],bridge:[4]},
-  {name:'A QUESTION OF TIMING',y:[220,260,260,320,380,430,490],k:'rbrfrr',gate:[4],bridge:[2]},
-  {name:'THE ARCHITECTURE OF DOUBT',y:[250,275,275,320,365,430,480],k:'rarrfr',gate:[3],bridge:[]},
-  {name:'A COLLECTION OF BOWLS',y:[230,255,255,320,320,430,485],k:'rbrbrr',gate:[2,4],bridge:[]},
-  {name:'A BRIDGE TOO MANY',y:[200,255,295,335,390,460,510],k:'rfrfrf',gate:[3],bridge:[1,4]},
-  {name:'THE SWITCHBACK',y:[260,305,285,375,345,435,495],k:'rrrrrr',gate:[2,5],bridge:[]},
-  {name:'CONVEX / CONCAVE',y:[225,255,255,340,340,450,500],k:'rarbrr',gate:[4],bridge:[2]},
-  {name:'THE LONG WAY ROUND',y:[185,230,275,320,365,430,485],k:'rfrfrf',gate:[5],bridge:[3]},
-  {name:'AN UNNECESSARY RESERVOIR',y:[235,265,265,320,320,420,495],k:'rbrbrr',gate:[4],bridge:[5]},
-  {name:'PROVISIONAL CONNECTIONS',y:[215,255,305,305,385,455,505],k:'rrbfrf',gate:[3],bridge:[1,5]},
-  {name:'THE COURT OF CIRCLES',y:[210,255,255,345,345,435,490],k:'rbrarr',gate:[2,5],bridge:[4]},
-  {name:'THE ALMOST INFINITE FALL',y:[175,235,300,370,445,505,550],k:'rrrrrr',gate:[2,4],bridge:[3,5]},
-  {name:'THE LAST UNIMPORTANT PLACE',y:[195,240,240,330,330,430,500],k:'rbrbrr',gate:[2,4],bridge:[5]}
-];
-let index=0,faces=[],released=0,saved=0,lost=0,running=false,finished=false,frameId=0,last=0,acc=0,releaseClock=0;
-let controls=[],track=[],activeSegments=[];
-const div=(className,styles='',content='')=>{let e=document.createElement('div');e.className=className;e.style.cssText=styles;e.innerHTML=content;return e;};
-function fit(){world.style.transform='scale('+(viewport.clientWidth/W)+')';}
-new ResizeObserver(fit).observe(viewport);fit();
-function level(){return shapes[index];}
-function segmentY(i,x){
- const s=track[i],t=Math.max(0,Math.min(1,(x-s.x)/STEP));
- if(s.type==='b')return s.y0+74*Math.sin(Math.PI*t);
- if(s.type==='a')return s.y0-49*Math.sin(Math.PI*t);
- if(s.type==='f')return s.y0+(s.y1-s.y0)*t;
- return s.y0+(s.y1-s.y0)*t;
-}
-function surfaceAt(x){
- if(x<LEFT||x>RIGHT)return null;
- let i=Math.min(N-1,Math.max(0,Math.floor((x-LEFT)/STEP)));
- if(activeSegments[i]===false)return null;
- return {y:segmentY(i,x),i};
-}
-function findLanding(x,oldY,newY){
- const t=surfaceAt(x);if(!t)return null;
- if(oldY<=t.y+5 && newY>=t.y)return t;
- return null;
-}
-function path(i){
- const s=track[i],parts=16;let d='';
- for(let j=0;j<=parts;j++){const x=s.x+(STEP*j/parts),y=segmentY(i,x);
- d+=(j?' L ':'M ')+x.toFixed(2)+' '+y.toFixed(2);}
- return d;
-}
-function drawTrack(){
- let pathElements='',fillElements='';
- for(let i=0;i<N;i++){
-  const d=path(i);
-  if(activeSegments[i]===false){pathElements+='<path d="'+d+'" stroke="#888" stroke-width="3" fill="none" stroke-dasharray="8 9" opacity=".65"/>';continue;}
-  pathElements+='<path class="terrain-line" d="'+d+'"/>';
-  fillElements+='<path class="terrain-fill" d="'+d+' L '+(track[i].x+STEP)+' 760 L '+track[i].x+' 760 Z"/>';
- }
- terrain.innerHTML='<svg width="800" height="800" viewBox="0 0 800 800" aria-hidden="true"><defs><pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse"><path d="M0 9L9 0" stroke="#b8b8b4" stroke-width="1"/></pattern></defs>'+fillElements+pathElements+'</svg>';
-}
-function makeControl(type,id){
- const x=type==='gate'?LEFT+id*STEP+STEP*.75:LEFT+id*STEP+STEP*.5;
- const y=segmentY(id,x);
- const e=div('mechanic', 'left:'+(x-50)+'px;top:'+(Math.min(690,y+85))+'px',type==='gate'?'OPEN GATE<span class="minor">tap to release</span>':'EXTEND BRIDGE<span class="minor">tap to connect</span>');
- const c={type,id,open:false,el:e,block:null};
- if(type==='gate'){
-  c.block=div('gate','left:'+(x-5)+'px;top:'+(y-68)+'px;height:68px');
-  fixtures.append(c.block);
- } else {
-  c.block=div('bridge absent','left:'+(LEFT+id*STEP)+'px;top:'+(y-6)+'px;width:'+STEP+'px');
-  fixtures.append(c.block);
- }
- e.addEventListener('click',()=>{
-  if(finished)return;
-  c.open=!c.open;
-  e.classList.toggle('active',c.open);
-  e.innerHTML=type==='gate'?(c.open?'GATE OPEN<span class="minor">tap to close</span>':'OPEN GATE<span class="minor">tap to release</span>'):(c.open?'BRIDGE READY<span class="minor">tap to retract</span>':'EXTEND BRIDGE<span class="minor">tap to connect</span>');
-  c.block.classList.toggle(type==='gate'?'open':'absent',type==='gate'?c.open:!c.open);
-  if(type==='bridge'){activeSegments[id]=c.open;drawTrack();}
- });
- fixtures.append(e);controls.push(c);
-}
-function build(){
- stop();finished=false;faces=[];released=saved=lost=0;releaseClock=0;
- facesEl.replaceChildren();fixtures.replaceChildren();$('result').hidden=true;
- $('start').disabled=false;$('start').textContent='Start';$('worldTitle').textContent=String(index+1).padStart(2,'0')+' / '+level().name;
- $('message').textContent='Save at least '+GOAL+' of '+TOTAL+' Faces.';
- track=Array.from({length:N},(_,i)=>({x:LEFT+i*STEP,y0:level().y[i],y1:level().y[i+1],type:level().k[i]}));
- activeSegments=Array(N).fill(true);
- level().bridge.forEach(i=>activeSegments[i]=false);
- drawTrack();
- fixtures.append(div('entry','left:48px;top:'+(track[0].y0-66)+'px','IN'));
- fixtures.append(div('exit','left:704px;top:'+(track[N-1].y1-65)+'px','OUT'));
- fixtures.append(div('world-note','left:52px;top:730px','THE FACE DOES NOT KNOW WHY.'));
- for(let i=0;i<level().gate.length;i++)makeControl('gate',level().gate[i]);
- for(let i=0;i<level().bridge.length;i++)makeControl('bridge',level().bridge[i]);
- $('previous').disabled=index===0;$('next').disabled=index===shapes.length-1;
- $('levelSelect').value=String(index);hud();
-}
-function hud(){$('released').textContent=released+'/'+TOTAL;$('saved').textContent=saved+'/'+GOAL;$('lost').textContent=lost;}
-function stop(){running=false;cancelAnimationFrame(frameId);frameId=0;}
-function begin(){
- if(running||finished)return;running=true;$('start').disabled=true;$('start').textContent='Migrating…';last=0;acc=0;spawn();frameId=requestAnimationFrame(loop);
-}
-function spawn(){
- if(released>=TOTAL)return;
- const e=div('face');facesEl.append(e);
- faces.push({el:e,x:LEFT+13,y:track[0].y0,vx:1.12,vy:0,grounded:true,angle:0,alive:true});
- released++;hud();
-}
-function remove(f,kind){if(!f.alive)return;f.alive=false;f.el.remove();if(kind==='saved')saved++;else lost++;hud();}
-function gateFor(f,nextX){
- for(const c of controls)if(c.type==='gate'&&!c.open){
-  const gx=LEFT+c.id*STEP+STEP*.75;
-  if(f.x<=gx-13.001 && nextX>=gx-13)return gx-13;
- }
- return null;
-}
-function tick(f){
- if(!f.alive)return;
- const oldX=f.x,oldY=f.y;
- if(f.grounded){
-  const nx=f.x+f.vx,g=gateFor(f,nx);
-  if(g!=null)f.x=g;
-  else {
-   f.x=nx;const s=surfaceAt(f.x);
-   if(s){f.y=s.y;f.vy=0;}
-   else{f.grounded=false;f.vy=.1;}
-  }
- } else {
-  f.vy=Math.min(9.5,f.vy+.2);
-  const nx=f.x+f.vx,ny=f.y+f.vy,g=gateFor(f,nx);
-  f.x=g==null?nx:g;
-  const landed=f.vy>=0?findLanding(f.x,oldY,ny):null;
-  if(landed){f.y=landed.y;f.grounded=true;f.vy=0;}
-  else f.y=ny;
- }
- // A Face crossing the final ramp reaches the exit.
- if(f.x>=RIGHT-12&&f.y<650){remove(f,'saved');return;}
- if(f.y>775||f.x>W+25){remove(f,'lost');return;}
- f.angle+=(f.x-oldX)*180/(Math.PI*13);
- f.el.style.transform='translate3d('+(f.x-13).toFixed(2)+'px,'+(f.y-26).toFixed(2)+'px,0) rotate('+f.angle.toFixed(2)+'deg)';
-}
-function conclude(){
- stop();finished=true;$('result').hidden=false;
- const success=saved>=GOAL;
- $('resultTitle').textContent=success?'THE FACE ARRIVES':'THE FACE CONTINUES';
- $('resultText').textContent=saved+' saved. '+lost+' lost. '+(success?'The journey was entirely unnecessary.':'Consider extending the bridges before the Faces arrive.');
- $('resultButton').textContent=index===15?'Begin again':'Next journey';
- $('message').textContent=success?'A successful migration. For whatever that means.':'The Face can try again.';
-}
-function loop(now){
- if(!running)return;if(!last)last=now;
- acc=Math.min(110,acc+(now-last));last=now;
- while(acc>=16.667){
-  acc-=16.667;releaseClock++;
-  if(released<TOTAL&&releaseClock>=49){releaseClock=0;spawn();}
-  for(const f of faces)tick(f);
-  if(released===TOTAL&&faces.every(f=>!f.alive)){conclude();return;}
- }
- frameId=requestAnimationFrame(loop);
-}
-function go(i){index=Math.max(0,Math.min(15,i));build();}
-$('start').addEventListener('click',begin);
-$('restart').addEventListener('click',build);
-$('previous').addEventListener('click',()=>go(index-1));
-$('next').addEventListener('click',()=>go(index+1));
-$('levelSelect').addEventListener('change',e=>go(+e.target.value));
-$('resultButton').addEventListener('click',()=>go(index===15?0:index+1));
-$('helpButton').addEventListener('click',()=>{const open=$('help').classList.toggle('visible');$('helpButton').setAttribute('aria-expanded',String(open));});
-shapes.forEach((s,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=String(i+1).padStart(2,'0')+' · '+s.name;$('levelSelect').append(o);});
-build();
-})();
-</script></body></html>
+const output=new MutationObserver(()=>{
+ document.getElementById('finishArrived').textContent=document.getElementById('arrivedCount').textContent;
+ document.getElementById('finishLost').textContent=document.getElementById('lostCount').textContent;
+});
+output.observe(document.querySelector('.scoreboard'),{subtree:true,characterData:true,childList:true});
+</script>
+</body></html>
