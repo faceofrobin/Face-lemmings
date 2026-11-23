@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FACE LEMMINGS — Level 01: The Unnecessary Journey</title>
+<style>
+:root{color-scheme:light;--ink:#111;--paper:#f3f3f0}
+*{box-sizing:border-box}body{background:var(--paper);color:var(--ink);font:15px/1.5 system-ui,Arial,sans-serif;margin:0}
+main{max-width:1020px;margin:auto;padding:22px 18px 70px}
+header{display:flex;gap:20px;justify-content:space-between;align-items:end;flex-wrap:wrap}
+h1{font-size:clamp(28px,4.8vw,56px);letter-spacing:-.07em;line-height:1;margin:4px 0}p{margin:6px 0 14px}
+small,.muted{color:#555}button{font:inherit;cursor:pointer;border:1px solid #111;background:white;color:#111;padding:8px 13px}button:hover{background:#111;color:white}button:focus-visible{outline:3px solid #666;outline-offset:3px}
+.hud{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0}
+.stat{border:1px solid #111;padding:8px 13px;background:white;font-variant-numeric:tabular-nums}
+#viewport{position:relative;width:100%;aspect-ratio:12/7;background:#fafafa;border:3px solid #111;overflow:hidden;touch-action:manipulation}
+#world{position:absolute;left:0;top:0;width:960px;height:560px;transform-origin:top left;background:linear-gradient(180deg,#fafafa,#e9e9e6)}
+.ground{position:absolute;background:#111;pointer-events:none}.platform{border-top:5px solid #111;background:repeating-linear-gradient(45deg,#cececa 0 2px,#e9e9e5 2px 8px)}
+.marker{position:absolute;color:#777;font:11px/1 monospace;letter-spacing:2px}
+.exit{position:absolute;width:50px;height:75px;border:4px double #111;background:#fff;display:flex;align-items:center;justify-content:center;font:11px monospace;text-align:center}
+.face{position:absolute;width:28px;height:28px;background:url('Face-svg.svg') center/contain no-repeat;transform-origin:center center;will-change:transform;pointer-events:none;filter:drop-shadow(0px 2px 1px #0004)}
+.hazard{position:absolute;background:repeating-linear-gradient(135deg,#111 0 5px,#eee 5px 10px);outline:2px solid #111}
+.hazard.off{opacity:.08}
+.switch{position:absolute;padding:8px 10px;background:#fff;border:2px solid #111;font:13px monospace;z-index:2}
+.switch.on{background:#111;color:white}
+.footnote{margin-top:10px;max-width:720px}.gameover{position:absolute;left:50%;top:35%;transform:translate(-50%,-50%);width:460px;max-width:80%;background:#fff;border:4px solid #111;padding:24px;z-index:5;text-align:center}
+.gameover h2{margin:0 0 8px;font-size:32px;letter-spacing:-1px}.gameover[hidden]{display:none}
+#live{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+</style>
+</head>
+<body><main>
+<header><div><small>FACEOFROBIN.COM / AIFACES / AN UNNECESSARY EXPEDITION</small><h1>FACE LEMMINGS</h1><p>LEVEL 01: THE UNNECESSARY JOURNEY</p></div><div><small>THE FACE HAS NOWHERE TO GO.</small><div>IT GOES ANYWAY.</div></div></header>
+<div class="hud">
+<div class="stat">RELEASED <b id="released">0</b>/8</div>
+<div class="stat">SAVED <b id="saved">0</b>/5</div>
+<div class="stat">LOST <b id="lost">0</b></div>
+<button id="start">Start migration</button><button id="reset">Restart</button>
+</div>
+<div id="viewport" aria-label="Platform game with rolling Faces navigating descending ledges">
+<div id="world">
+<div class="marker" style="left:34px;top:42px">ENTRY / SOMEWHERE</div>
+<div class="marker" style="left:770px;top:340px">EXIT / ELSEWHERE</div>
+<div class="ground platform" style="left:20px;top:150px;width:190px;height:21px"></div>
+<div class="ground platform" style="left:248px;top:245px;width:192px;height:21px"></div>
+<div class="ground platform" style="left:477px;top:350px;width:218px;height:21px"></div>
+<div class="ground platform" style="left:726px;top:458px;width:214px;height:22px"></div>
+<div class="ground" style="left:0;top:548px;width:960px;height:12px"></div>
+<div class="exit" style="left:870px;top:383px">NOT<br>THE END</div>
+<div class="hazard" id="hazard" style="left:592px;top:325px;width:32px;height:25px"></div>
+<button class="switch" id="switch" style="left:485px;top:285px" aria-pressed="false">REMOVE OBSTACLE</button>
+<div id="face-layer"></div>
+<div class="gameover" id="result" hidden><h2 id="result-title">THE FACE ARRIVES</h2><p id="result-text"></p><button id="again">Go again</button></div>
+</div></div>
+<p class="footnote">Let the Faces roll downhill. Click <b>REMOVE OBSTACLE</b> before they reach the striped barrier. Save at least five. Their movements are automatic, which is probably for the best. This level is built from DOM elements; the platforms, obstacle, entrance and exit can all be rearranged from a drawn map.</p>
+<div id="live" aria-live="polite"></div>
+</main>
+<script>
+(()=>{'use strict';
+const W=960,H=560,SIZE=28,R=14,TOTAL=8,GOAL=5;
+const ground=[{x:20,y:150,w:190},{x:248,y:245,w:192},{x:477,y:350,w:218},{x:726,y:458,w:214}];
+const world=document.getElementById('world'),vp=document.getElementById('viewport'),layer=document.getElementById('face-layer');
+const $=id=>document.getElementById(id);
+let faces=[],released=0,saved=0,lost=0,playing=false,ended=false,obstacle=true,last=0,acc=0,spawnClock=0,raf=0;
+function resize(){world.style.transform='scale('+(vp.clientWidth/W)+')';}
+new ResizeObserver(resize).observe(vp);resize();
+function hud(){$('released').textContent=released;$('saved').textContent=saved;$('lost').textContent=lost;}
+function reset(){cancelAnimationFrame(raf);layer.replaceChildren();faces=[];released=saved=lost=0;playing=ended=false;obstacle=true;acc=spawnClock=0;last=0;
+ $('hazard').classList.remove('off');$('switch').classList.remove('on');$('switch').setAttribute('aria-pressed','false');$('switch').textContent='REMOVE OBSTACLE';
+ $('result').hidden=true;$('start').disabled=false;$('start').textContent='Start migration';hud();}
+function spawn(){if(released>=TOTAL)return;released++;
+ const el=document.createElement('div');el.className='face';layer.append(el);
+ faces.push({el,x:66,y:122,vx:1.7,vy:0,angle:0,alive:true,landed:true});hud();}
+function finish(){ended=true;playing=false;$('result').hidden=false;
+ const ok=saved>=GOAL;$('result-title').textContent=ok?'THE FACE ARRIVES':'THE FACE PERSISTS';
+ $('result-text').textContent=ok?(saved+' Faces reached somewhere else. Their satisfaction is unknown.'):
+ (saved+' Faces arrived. '+lost+' did not. Try removing the obstacle earlier.');$('live').textContent=$('result-title').textContent;}
+function removeFace(f,kind){if(!f.alive)return;f.alive=false;f.el.remove();if(kind==='saved')saved++;else lost++;hud();}
+function physics(f){
+ const oldX=f.x,oldY=f.y;
+ f.vy=Math.min(9,f.vy+.20);
+ f.x+=f.vx;f.y+=f.vy;f.landed=false;
+ // top surfaces catch the downward-moving circle. The bottom of the viewport is not safe.
+ if(f.vy>=0){for(const p of ground){
+  if(f.x+R*.6>=p.x&&f.x-R*.6<=p.x+p.w&&oldY<=p.y+3&&f.y>=p.y){
+   f.y=p.y;f.vy=0;f.landed=true;break;
+  }
+ }}
+ // A persistent obstruction on the third platform. A switched-off obstruction is intangible.
+ if(obstacle&&f.x+R>592&&f.x-R<624&&f.y>318&&f.y-SIZE<350){removeFace(f,'lost');return;}
+ if(f.x>870&&f.x<925&&f.y>=450&&f.y<=463){removeFace(f,'saved');return;}
+ if(f.y>H+32||f.x>W+32||f.x<0){removeFace(f,'lost');return;}
+ f.angle+=(f.x-oldX)*180/(Math.PI*R);
+ f.el.style.transform='translate('+Math.round(f.x-R)+'px,'+Math.round(f.y-SIZE)+'px) rotate('+f.angle.toFixed(1)+'deg)';
+}
+function tick(t){
+ if(!playing)return;
+ if(!last)last=t;acc=Math.min(acc+t-last,100);last=t;
+ while(acc>=16.6667){acc-=16.6667;spawnClock++;
+  if(released<TOTAL&&spawnClock>=55){spawnClock=0;spawn();}
+  for(const f of faces)if(f.alive)physics(f);
+  if(released===TOTAL&&faces.every(f=>!f.alive)){finish();return;}
+ }
+ raf=requestAnimationFrame(tick);
+}
+function start(){if(playing||ended)return;playing=true;$('start').disabled=true;$('start').textContent='Migration underway';spawn();raf=requestAnimationFrame(tick);}
+$('start').addEventListener('click',start);$('reset').addEventListener('click',reset);$('again').addEventListener('click',reset);
+$('switch').addEventListener('click',()=>{obstacle=!obstacle;$('hazard').classList.toggle('off',!obstacle);$('switch').classList.toggle('on',!obstacle);
+ $('switch').textContent=obstacle?'REMOVE OBSTACLE':'OBSTACLE REMOVED';$('switch').setAttribute('aria-pressed',String(!obstacle));});
+reset();
+})();
+</script>
+</body></html>
