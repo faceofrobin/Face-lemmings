@@ -5,4 +5,129 @@
 <div class="row"><div class="panel"><h2>A small wall</h2><p>One never knows what stands in the way.</p><button>Button</button></div><div class="panel"><h2>A second wall</h2><p>Gravity remains deeply committed to the task.</p><input placeholder="A place to land"></div></div>
 <h2>Steps</h2><div class="stairs"><span style="height:12px"></span><span style="height:20px"></span><span style="height:28px"></span><span style="height:36px"></span><span style="height:44px"></span><span style="height:52px"></span><span style="height:60px"></span><span style="height:52px"></span><span style="height:44px"></span><span style="height:36px"></span><span style="height:28px"></span><span style="height:20px"></span></div><div class="platform"></div>
 <h2>Some text is a floor.</h2><p>Not all who wander are lost. Some are circular and perfectly indifferent to the laws of locomotion. The Face has no legs, yet it persists.</p><div class="foot">THE FACE OBSERVES. THE FACE ROLLS.</div>
-<script src="face-walker.js"></script></html>
+<script>
+/* FACE LEMMINGS — standalone, dependency-free. Artwork: Face-svg.svg beside this file.
+ * Controls: window.__walker.add(), window.__faceLemmings.add(), .clear().
+ */
+(() => {
+  if (window.__faceLemmings) { window.__faceLemmings.add(); return; }
+  const thisScript = document.currentScript;
+  const src = thisScript ? new URL('Face-svg.svg', thisScript.src).href : 'Face-svg.svg';
+  const SCALE = 1, SIZE = 28, R = SIZE / 2, TICK = 1000/60;
+  const GRAVITY = .22, TERMINAL = 9, WALK = .65, BOUNCE = .28;
+  const SOLIDS = 'img,video,canvas,svg,button,input,textarea,select,iframe,hr';
+  const people = [];
+  let surfaces = [], lastW = innerWidth, lastH = innerHeight, previous = performance.now();
+  const host = document.createElement('div');
+  host.id = 'face-lemmings-host';
+  host.style.cssText = 'position:absolute;inset:0 auto auto 0;width:0;height:0;z-index:2147483640;pointer-events:none';
+  const shadow = host.attachShadow({mode:'open'});
+  const css = document.createElement('style');
+  css.textContent = `
+    .face { position:absolute;width:${SIZE}px;height:${SIZE}px;box-sizing:border-box;
+      pointer-events:auto;cursor:grab;touch-action:none;user-select:none;will-change:transform; }
+    .face:active { cursor:grabbing; }
+    .disc { width:100%;height:100%;background-image:url("${src.replace(/"/g,'%22')}");
+      background-size:100% 100%;background-position:center;background-repeat:no-repeat;
+      filter:drop-shadow(0 1px 1px #6668); }
+    @media(prefers-reduced-motion:reduce){ .face,.disc{transition:none!important;} }
+  `;
+  shadow.append(css);
+  const stage = document.createElement('div'); shadow.append(stage);
+  const ignored = el => el === host || el.closest?.('#face-lemmings-host');
+  const background = c => c && c !== 'transparent' && !/rgba?\([^)]*,\s*0\s*\)/.test(c);
+  function scan() {
+    const a = [], viewport = innerWidth * innerHeight;
+    const add=(el,rect,type)=>{if(rect.width>2&&rect.height>1)a.push({el,type,left:rect.left+scrollX,right:rect.right+scrollX,top:rect.top+scrollY,bottom:rect.bottom+scrollY});};
+    for(const el of document.body.querySelectorAll('*')) {
+      if (ignored(el)) continue;
+      const rect=el.getBoundingClientRect();if(!rect.width||!rect.height)continue;
+      const c=getComputedStyle(el);if(c.display==='none'||c.visibility==='hidden'||+c.opacity===0)continue;
+      if(el.matches(SOLIDS)) {add(el,rect,'solid');continue;}
+      const border=['Top','Right','Bottom','Left'].some(s=>parseFloat(c['border'+s+'Width'])>0 && c['border'+s+'Style']!=='none');
+      if ((background(c.backgroundColor)||c.backgroundImage!=='none'||border) && rect.width*rect.height < viewport*.55) add(el,rect,'solid');
+    }
+    const tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode(n){return /\S/.test(n.textContent||'')&&!/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA)$/.test(n.parentElement?.tagName)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});
+    const range=document.createRange();let t;
+    while(t=tw.nextNode()) {range.selectNodeContents(t);for(const rect of range.getClientRects())add(t.parentElement,rect,'text');}
+    surfaces=a;
+  }
+  let needsScan=true;
+  const schedule=()=>{needsScan=true;};
+  const observer=new MutationObserver(schedule);
+  function groundAt(x,y,oldFeet) {
+    const floor=scrollY+document.documentElement.clientHeight;
+    if(y>=floor && oldFeet<=floor+8)return {top:floor,type:'floor'};
+    let best=null;
+    for(const q of surfaces){if(x+R*.55<q.left||x-R*.55>q.right)continue;
+      if(q.top<oldFeet-4||q.top>y+2)continue;
+      if(!best||q.top<best.top)best=q;
+    }
+    return best;
+  }
+  function wallAt(x,top,bottom) {
+    return surfaces.some(s=>s.type==='solid' && s.left<x+R*.7 && s.right>x-R*.7 && s.top<bottom-4 && s.bottom>top+3);
+  }
+  function draw(p) {
+    p.el.style.transform=`translate3d(${(p.x-R).toFixed(2)}px,${(p.y-SIZE).toFixed(2)}px,0)`;
+    p.disc.style.transform=`rotate(${p.angle.toFixed(2)}deg)`;
+  }
+  function add() {
+    const el=document.createElement('div');el.className='face';el.setAttribute('role','img');el.setAttribute('aria-label','A rolling Face');
+    const disc=document.createElement('div');disc.className='disc';el.append(disc);stage.append(el);
+    const n=people.length;
+    const p={el,disc,x:Math.max(R+2,Math.min(document.documentElement.scrollWidth-R-2,scrollX+innerWidth/2+(n%9-4)*38)),y:scrollY+42,
+      vx:0,vy:0,angle:0,dir:n%2?-1:1,grounded:false,held:false,sample:[]};
+    el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();p.held=true;p.grounded=false;p.sample=[];el.setPointerCapture(e.pointerId);move(e);});
+    function move(e){if(!p.held)return;p.x=e.clientX+scrollX;p.y=e.clientY+scrollY+R;p.sample.push({x:p.x,y:p.y,t:e.timeStamp});p.sample=p.sample.filter(z=>e.timeStamp-z.t<110);draw(p);}
+    el.addEventListener('pointermove',move);
+    function release(){if(!p.held)return;p.held=false;const a=p.sample[0],b=p.sample.at(-1);if(a&&b&&b.t>a.t){let k=16/(b.t-a.t);p.vx=Math.max(-8,Math.min(8,(b.x-a.x)*k));p.vy=Math.max(-10,Math.min(9,(b.y-a.y)*k));}else{p.vx=0;p.vy=0;}p.dir=p.vx?Math.sign(p.vx):p.dir;}
+    el.addEventListener('pointerup',release);el.addEventListener('pointercancel',release);
+    people.push(p);draw(p);return p;
+  }
+  function step(p,mult) {
+    if(p.held)return;
+    const maxX=Math.max(R,document.documentElement.scrollWidth-R);
+    let dx=0;
+    if(p.grounded){dx=p.dir*WALK*mult;const target=p.x+dx;
+      if(wallAt(target,p.y-SIZE,p.y-5)){p.dir*=-1;dx=0;}
+      else {p.x=target;p.y-=Math.min(3,Math.max(0,p.y-(groundAt(p.x,p.y+3,p.y-4)?.top??p.y)));}
+      const surface=groundAt(p.x,p.y+5,p.y-5);
+      if(surface&&Math.abs(surface.top-p.y)<=5)p.y=surface.top;
+      else {p.grounded=false;p.vy=.2;}
+    }else{
+      p.vy=Math.min(TERMINAL,p.vy+GRAVITY*mult);
+      const steps=Math.max(1,Math.ceil(Math.max(Math.abs(p.vx),Math.abs(p.vy))*mult/3));
+      for(let i=0;i<steps;i++){
+        const nx=p.x+p.vx*mult/steps,ny=p.y+p.vy*mult/steps;
+        if(wallAt(nx,ny-SIZE,ny-4)) {p.vx=-p.vx*BOUNCE;p.dir*=-1;}
+        else p.x=nx;
+        const g=p.vy>=0?groundAt(p.x,ny,p.y):null;
+        if(g){p.y=g.top;p.grounded=true;p.vy=0;p.vx=0;break;}
+        if(p.vy<0&&wallAt(p.x,ny-SIZE,ny-SIZE+3))p.vy=0;
+        else p.y=ny;
+      }
+    }
+    if(p.x<=R){p.x=R;p.dir=1;p.vx=Math.abs(p.vx)*BOUNCE;}
+    if(p.x>=maxX){p.x=maxX;p.dir=-1;p.vx=-Math.abs(p.vx)*BOUNCE;}
+    // Rolling angle follows actual horizontal movement; flying Faces retain spin.
+    p.angle+=(p.grounded?dx*180/(Math.PI*R):((p.vx||p.dir*.4)*mult)*180/(Math.PI*R));
+    draw(p);
+  }
+  function frame(now){
+    if(needsScan){scan();needsScan=false;}
+    const dt=Math.min(2.4,Math.max(.3,(now-previous)/TICK));previous=now;
+    if(!document.hidden)for(const p of people)step(p,dt);
+    requestAnimationFrame(frame);
+  }
+  function init(){document.documentElement.append(host);scan();needsScan=false;
+    observer.observe(document.body,{childList:true,subtree:true,attributes:true,characterData:true});
+    addEventListener('resize',schedule);addEventListener('scroll',schedule,{passive:true});
+    add();requestAnimationFrame(frame);
+  }
+  window.__faceLemmings={add,clear(){for(const p of people)p.el.remove();people.length=0;},get count(){return people.length;}};
+  window.__walker=window.__faceLemmings;
+  if(document.body)init();else addEventListener('DOMContentLoaded',init,{once:true});
+})();
+
+</script></html>
