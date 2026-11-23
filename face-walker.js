@@ -4,7 +4,7 @@
 (() => {
   if (window.__faceLemmings) { window.__faceLemmings.add(); return; }
   const thisScript = document.currentScript;
-  const src = thisScript ? new URL('Face-svg.svg', thisScript.src).href : 'Face-svg.svg';
+  const src = thisScript && thisScript.src ? new URL('Face-svg.svg', thisScript.src).href : new URL('Face-svg.svg', document.baseURI).href;
   const SCALE = 1, SIZE = 28, R = SIZE / 2, TICK = 1000/60;
   const GRAVITY = .22, TERMINAL = 9, WALK = .65, BOUNCE = .28;
   const SOLIDS = 'img,video,canvas,svg,button,input,textarea,select,iframe,hr';
