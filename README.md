@@ -1,21 +1,28 @@
-# Lemmings
+# FACE LEMMINGS
+### Nowhere to go. Going anyway.
 
-Little pixel walkers that roam any web page. They walk on borders, buttons, images and text, turn at walls, and fall to the bottom of the window. Pick them up, throw them, or resize the window to launch them.
+A procession of tiny Faces rolls across an indifferent digital landscape.
 
-One script, no dependencies. The sprites are pure CSS, with no images.
+They have no feet. They have no destination worth mentioning. They are, nevertheless, entirely committed to the journey.
 
-## Use
+Each Face is drawn from the original **Face of Robin** emblem. Its features remain intact while the world insists on spinning around it—or perhaps it is the other way around.
 
-On your site:
+## The experience
 
-```html
-<script src="https://cdn.jsdelivr.net/gh/MarkBlah/lemmings@main/walker.min.js"></script>
-```
+**The Playground** (`index.html`) is a place for aimless motion. The Faces roll over obstacles, fall off ledges, land on words, and submit reluctantly to gravity. Pick one up and throw it; it will resume its business as though nothing has happened.
 
-From the DevTools console on any page:
+**The Level** (`level.html`) introduces the dangerous fiction of purpose. Guide a small migration of Faces across a deliberately inconvenient landscape toward the exit. There is a switch. There is an obstruction. There is, ultimately, a scoreboard.
 
-```js
-document.head.append(Object.assign(document.createElement('script'),{src:'https://cdn.jsdelivr.net/gh/MarkBlah/lemmings@main/walker.min.js'}))
-```
+The Face does not care about the scoreboard.
 
-Each load adds one walker. `__walker.add()` adds more.
+## A small technical footnote
+
+This experiment began with the tiny CSS walkers from [MarkBlah's Lemmings](https://github.com/MarkBlah/lemmings), whose clever collision and page-walking ideas sparked the adaptation. Face Lemmings replaces the pixel walker with the original Face SVG, given rotation, motion and a world of its own.
+
+The project contains the original `walker.js` and `walker.min.js` as historical reference. The rolling playground uses `face-walker.js`; the game level has its own bounded, DOM-based level engine. The artwork is `Face-svg.svg`.
+
+This is an artwork hosted by FACEOFROBIN.COM, not a general-purpose embeddable widget or CDN distribution.
+
+---
+
+*The Face has nowhere important to go. It insists on getting there anyway.*
