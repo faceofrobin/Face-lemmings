@@ -1,4 +1,4 @@
-# FACE LEMMINGS
+# FACE MIGRATION
 ### Nowhere to go. Going anyway.
 
 A procession of tiny Faces rolls across an indifferent digital landscape.
@@ -11,13 +11,13 @@ Each Face is drawn from the original **Face of Robin** emblem. Its features rema
 
 **The Playground** (`index.html`) is a place for aimless motion. The Faces roll over obstacles, fall off ledges, land on words, and submit reluctantly to gravity. Pick one up and throw it; it will resume its business as though nothing has happened.
 
-**The Level** (`level.html`) introduces the dangerous fiction of purpose. Guide a small migration of Faces across a deliberately inconvenient landscape toward the exit. There is a switch. There is an obstruction. There is, ultimately, a scoreboard.
+**Face Migration** (`level.html`) is a series of sixteen unnecessary journeys: bridges that must be extended, gates that must be opened, descents, arches, and semicircular bowls where the Faces collect before being released. A square playfield, three simple scores, and a procession that will not explain its objectives.
 
 The Face does not care about the scoreboard.
 
 ## A small technical footnote
 
-This experiment began with the tiny CSS walkers from [MarkBlah's Lemmings](https://github.com/MarkBlah/lemmings), whose clever collision and page-walking ideas sparked the adaptation. Face Lemmings replaces the pixel walker with the original Face SVG, given rotation, motion and a world of its own.
+This experiment began with the tiny CSS walkers from [MarkBlah's Lemmings](https://github.com/MarkBlah/lemmings), whose clever collision and page-walking ideas sparked the adaptation. Face Migration replaces the pixel walker with the original Face SVG, given rotation, motion and a world of its own.
 
 The project contains the original `walker.js` and `walker.min.js` as historical reference. The rolling playground uses `face-walker.js`; the game level has its own bounded, DOM-based level engine. The artwork is `Face-svg.svg`.
 
