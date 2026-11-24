@@ -5,23 +5,34 @@ A procession of tiny Faces rolls across an indifferent digital landscape.
 
 They have no feet. They have no destination worth mentioning. They are, nevertheless, entirely committed to the journey.
 
-Each Face is drawn from the original **Face of Robin** emblem. Its features remain intact while the world insists on spinning around it—or perhaps it is the other way around.
+**The main work is [Face Migration](index.html)**: a single page full of borders, typography, ramps, accelerators, springs, steps, and an exit that may or may not deserve the name. Pick up a Face and throw it. A stuck Face should seek a way out. The page itself is its landscape.
 
-## The experience
+## What lives here
 
-**The Playground** (`index.html`) is a place for aimless motion. The Faces roll over obstacles, fall off ledges, land on words, and submit reluctantly to gravity. Pick one up and throw it; it will resume its business as though nothing has happened.
+- **[index.html](index.html)** — the current adventure. Add one Face or release eight; watch the on-page and escaped counters
+- **[resources.html](resources.html)** — a library of copyable HTML terrain modules. Choose left, center, or right justification, and a width; the generated snippet updates accordingly
+- **face-walker.js** — the page-aware physics engine: rolling, dragging, collision detection, ramps, conveyors, springs, exits, and automatic recovery from boxed-in drops
+- **Face-svg.svg** — the canonical artwork. The color variants change only black ink, keeping the geometry and white negative space intact
+- **level.html**, **sixteen-levels.html**, **migration.js** — archived and experimental approaches, not the primary experience
+- **walker.js**, **walker.min.js** — original CSS walker reference files, preserved
 
-**The Long Migration** (`level.html`) is a single journey through approximately sixteen screens of ordinary HTML. A button releases a tiny Face into real text, buttons, images and boxes. The page itself becomes the terrain. The final section counts the arrivals. The example content lives inside `<div id="migration-content">` and can be replaced with any HTML you like. Add `data-face-platform` to designate a walkable object or `data-face-ignore` to exclude a subtree. The script `migration.js` reads each rendered text line and element rectangle directly.\n\n**The original sixteen-level experiment** is preserved in `sixteen-levels.html`. It contains gates, bridges, descents, arches and bowls.
+## Building the landscape
 
-The Face does not care about the scoreboard.
+Terrain blocks use small, declarative attributes:
 
-## A small technical footnote
+- `data-face="boost"` with `data-dir="left"` or `"right"`: accelerator
+- `data-face="ramp-up"` or `"ramp-down"`: inclined surfaces
+- `data-face="spring"`: bounce pad
+- `data-face="platform"`: flat horizontal surface
+- `data-face="exit"`: the place where arrivals are counted
 
-This experiment began with the tiny CSS walkers from [MarkBlah's Lemmings](https://github.com/MarkBlah/lemmings), whose clever collision and page-walking ideas sparked the adaptation. Face Migration replaces the pixel walker with the original Face SVG, given rotation, motion and a world of its own.
+A module's wrapper can be set to `data-align="left"`, `"center"`, or `"right"`, with `style="--block-width:72%"`. See [resources.html](resources.html) for full, copy-ready examples separated by comments. These are HTML fragments, not iframe embeds, and are intended for this particular artwork.
 
-The project contains the original `walker.js` and `walker.min.js` as historical reference. The rolling playground uses `face-walker.js`; the sixteen-level prototype is archived separately. The long page uses `migration.js`. The artwork is `Face-svg.svg`.
+## Provenance
 
-This is an artwork hosted by FACEOFROBIN.COM, not a general-purpose embeddable widget or CDN distribution.
+This experiment grew from [MarkBlah's Lemmings](https://github.com/MarkBlah/lemmings) and its imaginative pure-CSS walkers. The Face is the original Face of Robin SVG; its source geometry has not been redrawn. Color variants recolor the dark ink without changing the contours.
+
+This is an artwork for FACEOFROBIN.COM, not an advertised embeddable widget.
 
 ---
 
