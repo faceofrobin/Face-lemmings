@@ -1,0 +1,63 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Face Migration — Terrain Resources</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:clamp(20px,4vw,55px);font:16px/1.55 system-ui;background:#f7f7f5;color:#111}
+h1{font-size:clamp(2.7rem,7vw,5.8rem);line-height:1;letter-spacing:-.07em;margin:10px 0}
+h2{font-size:1.6rem;letter-spacing:-.04em}a{color:inherit}
+.note{max-width:68ch}.resource{margin:50px 0;border-top:3px solid #111;padding-top:20px}
+.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:12px 0}
+button,select,input{font:inherit;padding:8px 11px;border:1px solid #111;background:white;color:#111}
+button{background:#111;color:white;cursor:pointer}button:hover{background:#555}
+.preview{background:#fff;min-height:165px;border:1px dashed #999;padding:15px;overflow:hidden}
+.block{width:var(--block-width,72%);margin:26px 0}
+.block[data-align=left]{margin-left:0;margin-right:auto}
+.block[data-align=center]{margin-left:auto;margin-right:auto}
+.block[data-align=right]{margin-left:auto;margin-right:0}
+.platform{height:9px;background:#111}
+.belt{height:9px;background:repeating-linear-gradient(90deg,#c05a24 0 13px,#111 13px 20px);animation:shift .5s linear infinite;background-size:20px 100%}
+.belt[data-dir=left]{animation-direction:reverse}@keyframes shift{to{background-position:20px 0}}
+.hills{height:110px;display:flex;align-items:end}.hills i{height:100%;background:#111;clip-path:polygon(0 100%,100% 0,100% 100%);flex:1}
+.hills i[data-face=ramp-down]{clip-path:polygon(0 0,100% 100%,0 100%)}
+.springs{height:105px;position:relative}.ledge{position:absolute;bottom:75px;height:9px;background:#111;width:35%}.ledge.l{left:0}.ledge.r{right:0}
+.spring{position:absolute;left:calc(50% - 25px);bottom:0;width:50px;height:9px;background:repeating-linear-gradient(90deg,#214c96 0 8px,#111 8px 11px)}
+.door{height:85px;width:60px;border:4px solid #207148;border-bottom:0;border-radius:30px 30px 0 0;background:#e7f2eb;color:#207148;display:grid;place-items:center;font:bold 12px monospace}
+code,pre{font:13px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}
+pre{background:#191919;color:#fff;padding:18px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+caption{display:block}
+@media(prefers-reduced-motion:reduce){.belt{animation:none}}
+</style></head><body>
+<a href="index.html">Return to the adventure</a>
+<h1>Terrain Resources</h1>
+<p class="note">A cabinet of architectural mischief. Each module is independently copyable. Change its alignment or width, then copy its HTML into the adventure page. The <code>data-face</code> attributes give the rolling Faces their physics.</p>
+<p class="note"><strong>Editing note:</strong> These controls generate HTML snippets; they do not modify the live adventure automatically. Your destination page must have the matching CSS from <code>index.html</code>.</p>
+<div id="resources"></div>
+<script>
+const catalog=[
+{name:'01 — Platform',description:'A straightforward horizontal ledge.',code:'<!-- PLATFORM -->\n<div class="face-block" data-align="center" style="--block-width:72%">\n  <div class="platform" data-face="platform"></div>\n</div>'},
+{name:'02 — Accelerator',description:'Orange ink. Change data-dir to left to reverse the conveyor.',code:'<!-- SPEED STRIP -->\n<div class="face-block belt" data-face="boost" data-dir="right" data-align="center" style="--block-width:72%"></div>'},
+{name:'03 — Hills and valleys',description:'Concave and convex geometry constructed from ordinary clipped elements.',code:'<!-- HILLS AND VALLEYS -->\n<div class="face-block" data-align="center" style="--block-width:72%">\n  <div class="hills">\n    <i data-face="ramp-up"></i><i data-face="ramp-down"></i>\n    <i data-face="ramp-up"></i><i data-face="ramp-down"></i>\n  </div>\n  <div class="platform" data-face="platform"></div>\n</div>'},
+{name:'04 — Spring and ledges',description:'A little blue launch-pad between two places to land.',code:'<!-- SPRING AND LEDGES -->\n<div class="face-block" data-align="center" style="--block-width:72%">\n  <div class="springs">\n    <div class="ledge l" data-face="platform"></div>\n    <div class="ledge r" data-face="platform"></div>\n    <div class="spring" data-face="spring"></div>\n  </div>\n  <div class="platform" data-face="platform"></div>\n</div>'},
+{name:'05 — Box obstacle',description:'A real bordered HTML element. Dragging a Face inside should now move it back to the top edge.',code:'<!-- BOX OBSTACLE -->\n<div class="face-block panel" data-align="center" style="--block-width:72%;border:3px solid #111;padding:24px;background:white">\n  <h3>AN INCONVENIENT BOX</h3>\n  <p>There is no emergency exit, only gravity.</p>\n</div>'},
+{name:'06 — Exit',description:'A destination. When a Face reaches it, the escaped counter increases.',code:'<!-- EXIT -->\n<div class="face-block" data-align="center" style="--block-width:72%">\n  <div style="display:flex;justify-content:flex-end">\n    <div class="door" data-face="exit">EXIT</div>\n  </div>\n  <div class="platform" data-face="platform"></div>\n</div>'}
+];
+const container=document.getElementById('resources');
+for(const item of catalog){
+ const s=document.createElement('section');s.className='resource';
+ const title=document.createElement('h2');title.textContent=item.name;s.append(title);
+ const p=document.createElement('p');p.textContent=item.description;s.append(p);
+ const controls=document.createElement('div');controls.className='controls';
+ const label=document.createElement('label');label.textContent='Alignment ';
+ const select=document.createElement('select');for(const align of ['left','center','right']){const opt=document.createElement('option');opt.value=align;opt.textContent=align;select.append(opt);}
+ select.value='center';label.append(select);controls.append(label);
+ const width=document.createElement('label');width.textContent='Width ';
+ const widthSelect=document.createElement('select');for(const v of ['40%','55%','72%','85%','100%']){const opt=document.createElement('option');opt.value=v;opt.textContent=v;widthSelect.append(opt);}
+ widthSelect.value='72%';width.append(widthSelect);controls.append(width);
+ const copy=document.createElement('button');copy.textContent='Copy HTML';controls.append(copy);s.append(controls);
+ const preview=document.createElement('div');preview.className='preview';s.append(preview);
+ const pre=document.createElement('pre');s.append(pre);
+ const build=()=>{const html=item.code.replace('data-align="center"','data-align="'+select.value+'"').replace('--block-width:72%','--block-width:'+widthSelect.value);
+   preview.innerHTML=html;pre.textContent=html;return html;};
+ select.addEventListener('change',build);widthSelect.addEventListener('change',build);
+ copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(build());copy.textContent='Copied';}catch{const range=document.createRange();range.selectNodeContents(pre);const sel=getSelection();sel.removeAllRanges();sel.addRange(range);copy.textContent='Select and copy highlighted HTML';}});
+ container.append(s);build();
+}
+</script></body></html>
