@@ -1,133 +1,122 @@
-<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FACE LEMMINGS — Rolling Faces</title>
-<style>body{margin:0;padding:4vw;background:#f8f8f8;color:#111;font:16px/1.55 system-ui}h1{font-size:clamp(2rem,5vw,5rem);letter-spacing:-.06em;margin:0}button{background:#111;color:#fff;border:0;padding:12px 18px;cursor:pointer;font:inherit}button:hover{background:#555}.panel{border:2px solid #111;margin:60px 0;padding:20px;min-height:70px}.row{display:flex;gap:20px;flex-wrap:wrap}.row>.panel{flex:1;min-width:170px}.stairs{display:flex;align-items:end;height:140px;margin-top:80px}.stairs span{flex:1;background:#111}.platform{height:7px;background:#111;margin:100px 0}.foot{margin-top:180px;border-top:3px solid;padding:30px 0}</style>
-<h1>FACE LEMMINGS</h1><p>The Face rolls on. Pick one up, throw it, or watch it navigate the architecture.</p>
-<button onclick="__walker.add()">Add another Face</button> <button onclick="__walker.clear()">Clear Faces</button>
-<div class="row"><div class="panel"><h2>A small wall</h2><p>One never knows what stands in the way.</p><button>Button</button></div><div class="panel"><h2>A second wall</h2><p>Gravity remains deeply committed to the task.</p><input placeholder="A place to land"></div></div>
-<h2>Steps</h2><div class="stairs"><span style="height:12px"></span><span style="height:20px"></span><span style="height:28px"></span><span style="height:36px"></span><span style="height:44px"></span><span style="height:52px"></span><span style="height:60px"></span><span style="height:52px"></span><span style="height:44px"></span><span style="height:36px"></span><span style="height:28px"></span><span style="height:20px"></span></div><div class="platform"></div>
-<h2>Some text is a floor.</h2><p>Not all who wander are lost. Some are circular and perfectly indifferent to the laws of locomotion. The Face has no legs, yet it persists.</p><div class="foot">THE FACE OBSERVES. THE FACE ROLLS.</div>
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Face Migration — An Unnecessary Journey</title>
+<style>
+:root{--ink:#111;--paper:#f8f8f6;--orange:#c05a24;--blue:#214c96;--green:#207148}
+*{box-sizing:border-box}body{margin:0;padding:clamp(18px,4vw,54px);background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,sans-serif}
+h1{font-size:clamp(3.4rem,9vw,7rem);line-height:.9;letter-spacing:-.075em;margin:0 0 24px}h2{font-size:clamp(1.45rem,3vw,2.4rem);letter-spacing:-.05em;line-height:1.1}
+p{max-width:68ch}button,.button{display:inline-block;background:#111;color:white;border:0;padding:12px 18px;cursor:pointer;font:inherit;text-decoration:none}button:hover,.button:hover{background:#555}
+a{color:inherit}.links{display:flex;gap:20px;flex-wrap:wrap;margin:20px 0}
+.hud{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:650px;gap:8px;margin:24px 0}
+.hud div{border:2px solid;padding:12px;background:white;text-align:center}.hud small{display:block;font-size:11px;letter-spacing:.12em}.hud strong{font-size:30px}
+.controls{display:flex;flex-wrap:wrap;gap:8px}.note{color:#555}
+.panel{border:2px solid #111;margin:20px 0;padding:20px;min-height:75px;background:#fff}
+.row{display:flex;gap:20px;flex-wrap:wrap}.row>.panel{flex:1 1 230px}
+.feature{margin:105px 0}.feature>p{margin-bottom:28px}
+.face-block{--block-width:72%;width:var(--block-width);margin-top:30px;margin-bottom:30px}
+.face-block[data-align="left"]{margin-left:0;margin-right:auto}
+.face-block[data-align="center"]{margin-left:auto;margin-right:auto}
+.face-block[data-align="right"]{margin-left:auto;margin-right:0}
+.platform{height:8px;background:#111}
+.belt{height:9px;background:repeating-linear-gradient(90deg,var(--orange) 0 13px,#111 13px 20px);background-size:20px 100%;animation:belt .48s linear infinite}
+.belt[data-dir="left"]{animation-direction:reverse}@keyframes belt{to{background-position:20px 0}}
+.hills{display:flex;align-items:flex-end;height:155px;gap:0}
+.hills>i{display:block;background:#111;min-width:0;height:100%;clip-path:polygon(0 100%,100% 0,100% 100%)}
+.hills>i[data-face="ramp-down"]{clip-path:polygon(0 0,100% 100%,0 100%)}
+.rubble>i{height:65px}
+.springs{height:125px;position:relative}
+.ledge{position:absolute;bottom:80px;height:9px;background:#111;width:37%}
+.ledge.l{left:0}.ledge.r{right:0}
+.spring{position:absolute;bottom:0;left:calc(50% - 28px);width:56px;height:9px;background:repeating-linear-gradient(90deg,var(--blue) 0 8px,#111 8px 11px)}
+.exitrow{display:flex;justify-content:flex-end;min-height:150px;align-items:flex-end}
+.door{height:104px;width:70px;border:4px solid var(--green);border-bottom:0;border-radius:35px 35px 0 0;background:#e7f2eb;color:var(--green);font:700 14px/1.3 monospace;display:grid;place-items:center}
+.foot{border-top:4px solid #111;margin-top:120px;padding:30px 0;font-weight:700}
+.caption{font:12px/1.45 monospace;letter-spacing:.06em;color:#666;text-transform:uppercase}
+[data-face-spawn]{border-bottom:9px solid #111;padding:25px 0 32px;max-width:780px}
+@media(max-width:600px){.face-block{--block-width:88%}.hills{height:110px}.feature{margin:70px 0}.hud strong{font-size:22px}}
+@media(prefers-reduced-motion:reduce){.belt{animation:none}}
+</style></head><body>
+<header>
+<p class="caption">FACEOFROBIN.COM / An experiment in locomotion</p>
+<h1>Face<br>Migration</h1>
+<p>The Face has nowhere important to go. It insists on getting there anyway. Drop one into the architecture, throw it across a wall, or send an entire committee on its way.</p>
+<div class="links"><a href="resources.html">Terrain Resource Library</a><a href="sixteen-levels.html">Earlier experiment</a></div>
+</header>
+<section data-face-spawn>
+<p class="caption">Point of departure</p><h2>Release the Faces.</h2>
+<div class="controls">
+<button id="addFace">Spawn a Face</button>
+<button id="releaseFaces">Release eight</button>
+<button id="clearFaces">Clear Faces</button>
+</div></section>
+<div class="hud" aria-live="polite">
+<div><small>ON THE PAGE</small><strong id="on">0</strong></div>
+<div><small>ESCAPED</small><strong id="out">0</strong></div>
+<div><small>RELEASED</small><strong id="total">0</strong></div>
+</div>
+<!-- BEGIN ADVENTURE: Paste, reorder, or replace modules. data-align: left|center|right;
+     width controlled by style="--block-width:72%". -->
+<main id="adventure">
+<section class="feature">
+<p class="caption">01 / Ordinary obstacles</p>
+<h2>Two rather unremarkable boxes.</h2>
+<div class="row"><div class="panel"><h3>A small wall</h3><p>One never knows what stands in the way.</p><button>Button</button></div>
+<div class="panel"><h3>A second wall</h3><p>Gravity remains deeply committed to the task.</p><input placeholder="A place to land"></div></div>
+</section>
+<section class="feature">
+<p class="caption">02 / Elevation</p><h2>A staircase to somewhere.</h2>
+<div class="face-block" data-align="center" style="--block-width:90%">
+<div class="hills" style="height:85px">
+<i data-face="ramp-up" style="flex:1"></i><i data-face="ramp-down" style="flex:1"></i>
+<i data-face="ramp-up" style="flex:1"></i><i data-face="ramp-down" style="flex:1"></i>
+<i data-face="ramp-up" style="flex:1"></i><i data-face="ramp-down" style="flex:1"></i>
+</div><div class="platform" data-face="platform"></div></div>
+</section>
+<section class="feature">
+<p class="caption">03 / Acceleration</p><h2>Speed strips.</h2><p class="note">Orange ink means haste. The stripe direction influences the rolling speed.</p>
+<!-- ACCELERATOR, RIGHT-ALIGNED, RIGHTWARD -->
+<div class="face-block belt" data-align="right" data-face="boost" data-dir="right" style="--block-width:76%"></div>
+<!-- ACCELERATOR, LEFT-ALIGNED, LEFTWARD -->
+<div class="face-block belt" data-align="left" data-face="boost" data-dir="left" style="--block-width:63%"></div>
+</section>
+<section class="feature">
+<p class="caption">04 / Inclination</p><h2>Hills and valleys.</h2><p>Downhill is fast. Uphill requires a certain amount of faith.</p>
+<!-- HILLS, CENTERED -->
+<div class="face-block" data-align="center" style="--block-width:94%">
+<div class="hills"><i data-face="ramp-up" style="flex:3"></i><i data-face="ramp-down" style="flex:3"></i><i data-face="ramp-up" style="flex:6"></i><i data-face="ramp-down" style="flex:6"></i><i data-face="ramp-up" style="flex:2"></i><i data-face="ramp-down" style="flex:2"></i></div>
+<div class="platform" data-face="platform"></div></div>
+</section>
+<section class="feature">
+<p class="caption">05 / Improvised topography</p><h2>The rough road.</h2><p>No two committee meetings produce identical rubble.</p>
+<div class="face-block" data-align="left" style="--block-width:86%"><div class="hills rubble" id="rubble"></div><div class="platform" data-face="platform"></div></div>
+</section>
+<section class="feature">
+<p class="caption">06 / Momentum</p><h2>A spring, with two places to land.</h2><p>The blue Face has somewhere above the ordinary world to be.</p>
+<!-- SPRING AND LEDGES, CENTERED -->
+<div class="face-block" data-align="center" style="--block-width:80%">
+<div class="springs"><div class="ledge l" data-face="platform"></div><div class="ledge r" data-face="platform"></div><div class="spring" data-face="spring"></div></div>
+<div class="platform" data-face="platform"></div></div>
+</section>
+<section class="feature">
+<p class="caption">07 / Typography</p><h2>Words are places, too.</h2><p>Not all who wander are lost. Some are circular and perfectly indifferent to the laws of locomotion. The Face has no legs, yet it persists. The sentence is long enough to qualify as infrastructure.</p>
+<div class="face-block" data-align="right" style="--block-width:58%"><blockquote class="panel">To move is not necessarily to progress. To stop is not necessarily to arrive.</blockquote></div>
+</section>
+<section class="feature">
+<p class="caption">08 / Departure</p><h2>An exit, allegedly.</h2><p>Green ink is reserved for those approaching an actual destination.</p>
+<div class="face-block" data-align="right" style="--block-width:82%">
+<div class="exitrow"><div class="door" data-face="exit">EXIT</div></div>
+<div class="platform" data-face="platform"></div></div>
+</section>
+</main>
+<!-- END ADVENTURE -->
+<div class="foot">THE FACE OBSERVES. THE FACE ROLLS.</div>
 <script>
-/* FACE LEMMINGS — standalone, dependency-free. Artwork: Face-svg.svg beside this file.
- * Controls: window.__walker.add(), window.__faceLemmings.add(), .clear().
- */
-(() => {
-  if (window.__faceLemmings) { window.__faceLemmings.add(); return; }
-  const thisScript = document.currentScript;
-  const src = thisScript && thisScript.src ? new URL('Face-svg.svg', thisScript.src).href : new URL('Face-svg.svg', document.baseURI).href;
-  const SCALE = 1, SIZE = 28, R = SIZE / 2, TICK = 1000/60;
-  const GRAVITY = .22, TERMINAL = 9, WALK = .65, BOUNCE = .28;
-  const SOLIDS = 'img,video,canvas,svg,button,input,textarea,select,iframe,hr';
-  const people = [];
-  let surfaces = [], lastW = innerWidth, lastH = innerHeight, previous = performance.now();
-  const host = document.createElement('div');
-  host.id = 'face-lemmings-host';
-  host.style.cssText = 'position:absolute;inset:0 auto auto 0;width:0;height:0;z-index:2147483640;pointer-events:none';
-  const shadow = host.attachShadow({mode:'open'});
-  const css = document.createElement('style');
-  css.textContent = `
-    .face { position:absolute;width:${SIZE}px;height:${SIZE}px;box-sizing:border-box;
-      pointer-events:auto;cursor:grab;touch-action:none;user-select:none;will-change:transform; }
-    .face:active { cursor:grabbing; }
-    .disc { width:100%;height:100%;background-image:url("${src.replace(/"/g,'%22')}");
-      background-size:100% 100%;background-position:center;background-repeat:no-repeat;
-      filter:drop-shadow(0 1px 1px #6668); }
-    @media(prefers-reduced-motion:reduce){ .face,.disc{transition:none!important;} }
-  `;
-  shadow.append(css);
-  const stage = document.createElement('div'); shadow.append(stage);
-  const ignored = el => el === host || el.closest?.('#face-lemmings-host');
-  const background = c => c && c !== 'transparent' && !/rgba?\([^)]*,\s*0\s*\)/.test(c);
-  function scan() {
-    const a = [], viewport = innerWidth * innerHeight;
-    const add=(el,rect,type)=>{if(rect.width>2&&rect.height>1)a.push({el,type,left:rect.left+scrollX,right:rect.right+scrollX,top:rect.top+scrollY,bottom:rect.bottom+scrollY});};
-    for(const el of document.body.querySelectorAll('*')) {
-      if (ignored(el)) continue;
-      const rect=el.getBoundingClientRect();if(!rect.width||!rect.height)continue;
-      const c=getComputedStyle(el);if(c.display==='none'||c.visibility==='hidden'||+c.opacity===0)continue;
-      if(el.matches(SOLIDS)) {add(el,rect,'solid');continue;}
-      const border=['Top','Right','Bottom','Left'].some(s=>parseFloat(c['border'+s+'Width'])>0 && c['border'+s+'Style']!=='none');
-      if ((background(c.backgroundColor)||c.backgroundImage!=='none'||border) && rect.width*rect.height < viewport*.55) add(el,rect,'solid');
-    }
-    const tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode(n){return /\S/.test(n.textContent||'')&&!/^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA)$/.test(n.parentElement?.tagName)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;}});
-    const range=document.createRange();let t;
-    while(t=tw.nextNode()) {range.selectNodeContents(t);for(const rect of range.getClientRects())add(t.parentElement,rect,'text');}
-    surfaces=a;
-  }
-  let needsScan=true;
-  const schedule=()=>{needsScan=true;};
-  const observer=new MutationObserver(schedule);
-  function groundAt(x,y,oldFeet) {
-    const floor=scrollY+document.documentElement.clientHeight;
-    if(y>=floor && oldFeet<=floor+8)return {top:floor,type:'floor'};
-    let best=null;
-    for(const q of surfaces){if(x+R*.55<q.left||x-R*.55>q.right)continue;
-      if(q.top<oldFeet-4||q.top>y+2)continue;
-      if(!best||q.top<best.top)best=q;
-    }
-    return best;
-  }
-  function wallAt(x,top,bottom) {
-    return surfaces.some(s=>s.type==='solid' && s.left<x+R*.7 && s.right>x-R*.7 && s.top<bottom-4 && s.bottom>top+3);
-  }
-  function draw(p) {
-    p.el.style.transform=`translate3d(${(p.x-R).toFixed(2)}px,${(p.y-SIZE).toFixed(2)}px,0)`;
-    p.disc.style.transform=`rotate(${p.angle.toFixed(2)}deg)`;
-  }
-  function add() {
-    const el=document.createElement('div');el.className='face';el.setAttribute('role','img');el.setAttribute('aria-label','A rolling Face');
-    const disc=document.createElement('div');disc.className='disc';el.append(disc);stage.append(el);
-    const n=people.length;
-    const p={el,disc,x:Math.max(R+2,Math.min(document.documentElement.scrollWidth-R-2,scrollX+innerWidth/2+(n%9-4)*38)),y:scrollY+42,
-      vx:0,vy:0,angle:0,dir:n%2?-1:1,grounded:false,held:false,sample:[]};
-    el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();p.held=true;p.grounded=false;p.sample=[];el.setPointerCapture(e.pointerId);move(e);});
-    function move(e){if(!p.held)return;p.x=e.clientX+scrollX;p.y=e.clientY+scrollY+R;p.sample.push({x:p.x,y:p.y,t:e.timeStamp});p.sample=p.sample.filter(z=>e.timeStamp-z.t<110);draw(p);}
-    el.addEventListener('pointermove',move);
-    function release(){if(!p.held)return;p.held=false;const a=p.sample[0],b=p.sample.at(-1);if(a&&b&&b.t>a.t){let k=16/(b.t-a.t);p.vx=Math.max(-8,Math.min(8,(b.x-a.x)*k));p.vy=Math.max(-10,Math.min(9,(b.y-a.y)*k));}else{p.vx=0;p.vy=0;}p.dir=p.vx?Math.sign(p.vx):p.dir;}
-    el.addEventListener('pointerup',release);el.addEventListener('pointercancel',release);
-    people.push(p);draw(p);return p;
-  }
-  function step(p,mult) {
-    if(p.held)return;
-    const maxX=Math.max(R,document.documentElement.scrollWidth-R);
-    let dx=0;
-    if(p.grounded){dx=p.dir*WALK*mult;const target=p.x+dx;
-      if(wallAt(target,p.y-SIZE,p.y-5)){p.dir*=-1;dx=0;}
-      else {p.x=target;p.y-=Math.min(3,Math.max(0,p.y-(groundAt(p.x,p.y+3,p.y-4)?.top??p.y)));}
-      const surface=groundAt(p.x,p.y+5,p.y-5);
-      if(surface&&Math.abs(surface.top-p.y)<=5)p.y=surface.top;
-      else {p.grounded=false;p.vy=.2;}
-    }else{
-      p.vy=Math.min(TERMINAL,p.vy+GRAVITY*mult);
-      const steps=Math.max(1,Math.ceil(Math.max(Math.abs(p.vx),Math.abs(p.vy))*mult/3));
-      for(let i=0;i<steps;i++){
-        const nx=p.x+p.vx*mult/steps,ny=p.y+p.vy*mult/steps;
-        if(wallAt(nx,ny-SIZE,ny-4)) {p.vx=-p.vx*BOUNCE;p.dir*=-1;}
-        else p.x=nx;
-        const g=p.vy>=0?groundAt(p.x,ny,p.y):null;
-        if(g){p.y=g.top;p.grounded=true;p.vy=0;p.vx=0;break;}
-        if(p.vy<0&&wallAt(p.x,ny-SIZE,ny-SIZE+3))p.vy=0;
-        else p.y=ny;
-      }
-    }
-    if(p.x<=R){p.x=R;p.dir=1;p.vx=Math.abs(p.vx)*BOUNCE;}
-    if(p.x>=maxX){p.x=maxX;p.dir=-1;p.vx=-Math.abs(p.vx)*BOUNCE;}
-    // Rolling angle follows actual horizontal movement; flying Faces retain spin.
-    p.angle+=(p.grounded?dx*180/(Math.PI*R):((p.vx||p.dir*.4)*mult)*180/(Math.PI*R));
-    draw(p);
-  }
-  function frame(now){
-    if(needsScan){scan();needsScan=false;}
-    const dt=Math.min(2.4,Math.max(.3,(now-previous)/TICK));previous=now;
-    if(!document.hidden)for(const p of people)step(p,dt);
-    requestAnimationFrame(frame);
-  }
-  function init(){document.documentElement.append(host);scan();needsScan=false;
-    observer.observe(document.body,{childList:true,subtree:true,attributes:true,characterData:true});
-    addEventListener('resize',schedule);addEventListener('scroll',schedule,{passive:true});
-    add();requestAnimationFrame(frame);
-  }
-  window.__faceLemmings={add,clear(){for(const p of people)p.el.remove();people.length=0;},get count(){return people.length;}};
-  window.__walker=window.__faceLemmings;
-  if(document.body)init();else addEventListener('DOMContentLoaded',init,{once:true});
-})();
-
-</script></html>
+const rubble=document.getElementById('rubble');for(let i=0;i<14;i++){const f=(1+Math.random()*1.4).toFixed(2);rubble.insertAdjacentHTML('beforeend','<i data-face="ramp-up" style="flex:'+f+'"></i><i data-face="ramp-down" style="flex:'+f+'"></i>');}
+document.getElementById('addFace').onclick=()=>window.__walker?.add();
+document.getElementById('clearFaces').onclick=()=>window.__walker?.clear();
+document.getElementById('releaseFaces').onclick=()=>{for(let i=0;i<8;i++)setTimeout(()=>window.__walker?.add(),i*180);};
+addEventListener('facelemmings',e=>{document.getElementById('on').textContent=e.detail.count;document.getElementById('out').textContent=e.detail.escaped;document.getElementById('total').textContent=e.detail.total;});
+</script>
+<script src="face-walker.js"></script>
+</body></html>
