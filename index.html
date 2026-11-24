@@ -40,7 +40,7 @@ a{color:inherit}.links{display:flex;gap:20px;flex-wrap:wrap;margin:20px 0}
 <header>
 <p class="caption">FACEOFROBIN.COM / An experiment in locomotion</p>
 <h1>Face<br>Migration</h1>
-<p>The Face has nowhere important to go. It insists on getting there anyway. Drop one into the architecture, throw it across a wall, or send an entire committee on its way.</p>
+<p>The Face has nowhere important to go. It insists on getting there anyway. Every Face arrives in its own dark ink—red, blue, green, or orange—and keeps that color throughout the journey.</p>
 <div class="links"><a href="resources.html">Terrain Resource Library</a><a href="sixteen-levels.html">Earlier experiment</a></div>
 </header>
 <section data-face-spawn>
@@ -118,5 +118,5 @@ document.getElementById('clearFaces').onclick=()=>window.__walker?.clear();
 document.getElementById('releaseFaces').onclick=()=>{for(let i=0;i<8;i++)setTimeout(()=>window.__walker?.add(),i*180);};
 addEventListener('facelemmings',e=>{document.getElementById('on').textContent=e.detail.count;document.getElementById('out').textContent=e.detail.escaped;document.getElementById('total').textContent=e.detail.total;});
 </script>
-<script src="face-walker.js"></script>
+<script src="face-walker.js?v=spawn-colors-20261123"></script>
 </body></html>
